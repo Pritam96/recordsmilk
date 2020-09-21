@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet"
+    href="{% static 'records/dist/plugins/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.standalone.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'records/dist/plugins/DataTables/datatables.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.bootstrap4.min.css" />
+{% endblock %}
+
+{% block content %}
+
+<!-- <div class="container">
+    <div class="d-flex">
+        <div class="col">
+            
+            <button class="btn btn-white text-dark ml-4" id="button" data-date-format="yyyy-mm-dd"
+                data-date={{ date|date:"Y-m-d" }}><i class="fa fa-calendar"></i></button>
+        </div>
+        <div class="col">
+            
+            <div class="button_set_top mb-3 d-flex  justify-content-end" id="button_set_top"></div>
+        </div>
+    </div>
+</div> -->
+
+<div class="card">
+    <div class="card-body">
+
+        <h4 class="card-title">All Records</h4>
+        {% if records %}
+        <div class="container">
+            <div class="d-flex">
+                <div class="col">
+                    <!-- Calendar -->
+                    <button class="btn btn-white text-dark" id="button" data-date-format="yyyy-mm-dd"
+                        data-date={{ date|date:"Y-m-d" }}><i class="fa fa-calendar"></i></button>
+                </div>
+                <div class="col">
+                    <!-- PDF -->
+                    <div class="button_set_top mb-3 d-flex justify-content-end" id="button_set_top"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive-sm">
+            <table class="table" id="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Quantity (Kg)</th>
+                        <th scope="col">Amount (Rs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <th scope="row">{{ record.date|date:"d-M" }}</th>
+                        <td>{{ record.customer }}</td>
+                        <td>{{ record.milk.milk_type }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <h5>No Records Found</h5>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'records/dist/plugins/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js' %}">
+</script>
+<script type="text/javascript" src="{% static 'records/dist/plugins/DataTables/datatables.min.js' %}"></script>
+<script>
+    const formatDate = date => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    $('#button').datepicker().on('changeDate', function (ev) {
+        $('#button').datepicker('hide');
+        window.location.href = `/?date=${formatDate(ev.date)}`;
+    });
+
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            lengthChange: false,
+            buttons: ['pdf']
+        });
+
+        table.buttons().container()
+            .appendTo('#button_set_top');
+    });
+</script>
+{% endblock %}

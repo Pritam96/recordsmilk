@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet"
+    href="{% static 'records/dist/plugins/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.standalone.min.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Entry Details</h4>
+
+        <form method="POST" id="GenerateForm">
+            {% csrf_token %}
+            <div class="row ">
+                <div class="form-group mt-3 col-6">
+                    <select class="form-control" name="customer" onChange="SelectCustomer(this)" required>
+                        <option selected disabled value="">Select a customer</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="form-group col-sm-6">
+                    <input type="date" class="form-control" id="selectDate" name="date">
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="form-group col-sm-6">
+                    <select class="form-control" id="selectType" name="type" required>
+                        <option selected disabled value="">Select a type</option>
+                        {% for milk in milks %}
+                        <option value="{{ milk.id }}">{{ milk.milk_type }} ({{ milk.rate }} kg)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="form-group col-6">
+                    <input type="number" step="0.01" class="form-control" name="quantity" placeholder="Quantity"
+                        required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary text-uppercase btn-danger pl-5 pr-5">Add</button>
+        </form>
+    </div>
+</div>
+
+
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 15px;" class="mt-2">
+    <!-- Position it -->
+    {% if detail %}
+    <div style="position: absolute;">
+        <div class="toast" role="alert" aria-live="polite" aria-atomic="true" data-delay="2000">
+            <div role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                    {{ detail }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    document.getElementById('selectDate').valueAsDate = new Date();
+</script>
+{% endblock %}

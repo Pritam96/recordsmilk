@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Add Milk & Rate</h4>
+
+        <form method="POST" id="MilkAdd">
+            {% csrf_token %}
+            <div class="row ">
+                <div class="form-group col-6">
+                    <input type="text" class="form-control" name="milk" placeholder="Milk Type" required>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="form-group col-6">
+                    <input type="text" class="form-control" name="rate" placeholder="Rate" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary text-uppercase btn-danger pl-5 pr-5">Save</button>
+        </form>
+    </div>
+</div>
+
+
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 15px;" class="mt-2">
+    <!-- Position it -->
+    {% if detail %}
+    <div style="position: absolute;">
+        <div class="toast" role="alert" aria-live="polite" aria-atomic="true" data-delay="2000">
+            <div role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                    {{ detail }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

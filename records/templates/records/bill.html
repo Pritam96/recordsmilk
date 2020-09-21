@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'records/dist/plugins/DataTables/datatables.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.bootstrap4.min.css" />
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="container">
+            <div class="d-flex">
+                <div class="col">
+                    <h4 class="card-title">Bill Details</h4>
+                    <h6>Name: {{ customer.name }}</h6>
+                </div>
+                {% if records %}
+                <div class="col">
+                    <!-- PDF -->
+                    <div class="button_set_top mb-3 d-flex  justify-content-end" id="button_set_top"></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if records %}
+        <div class="table-responsive-sm">
+            <table class="table" id="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Rate (Rs.)</th>
+                        <th scope="col">Quantity (Kg.)</th>
+                        <th scope="col">Amount (Rs.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <th scope="row">{{ record.date }}</th>
+                        <td>{{ record.milk.milk_type }}</td>
+                        <td>{{ record.milk.rate }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Total Days: {{ days }} days</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ total_price }} Rupees (Total)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <h5>No Records Found</h5>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'records/dist/plugins/DataTables/datatables.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            lengthChange: false,
+            buttons: ['pdf']
+        });
+
+        table.buttons().container()
+            .appendTo('#button_set_top');
+    });
+</script>
+{% endblock %}
