@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.views import View
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponseRedirect
+from django.views.defaults import bad_request
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import CustomerModel
 from .models import MilkModel
 from .models import RecordsModel
 
 
-class RecordsView(View):
+class RecordsView(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = 'records/records.html'
     context = {}
 
@@ -23,7 +26,8 @@ class RecordsView(View):
         return render(request, self.template_name, self.context)
 
 
-class GenerateView(View):
+class GenerateView(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = 'records/generate.html'
     context = {}
 
@@ -54,7 +58,8 @@ class GenerateView(View):
             return render(request, self.template_name, self.context)
 
 
-class EntryView(View):
+class EntryView(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = 'records/entry.html'
     context = {}
 
@@ -82,7 +87,8 @@ class EntryView(View):
             return render(request, self.template_name, self.context)
 
 
-class AddCustomerView(View):
+class AddCustomerView(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = 'records/customer.html'
     context = {}
 
@@ -105,7 +111,8 @@ class AddCustomerView(View):
             return render(request, self.template_name, self.context)
 
 
-class AddMilkView(View):
+class AddMilkView(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = 'records/milk.html'
     context = {}
 
@@ -123,3 +130,39 @@ class AddMilkView(View):
         except Exception as e:
             self.context['detail'] = 'Problem arise: ' + str(e)
             return render(request, self.template_name, self.context)
+
+
+class LoginView(View):
+    template_name = 'login.html'
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            from django.contrib.auth import authenticate, login
+            username = request.POST['username']
+            password = request.POST['password']
+            print(username)
+            print(password)
+            user = authenticate(request, username=username, password=password)
+            if user is None:
+                raise Exception("User not exist")
+            login(request, user)
+            print("Logged in Successfully")
+            return HttpResponseRedirect('records')
+        except:
+            self.context['detail'] = 'Wrong username or password'
+            return render(request, self.template_name, self.context)
+
+
+class LogoutView(View):
+    def get(self, request):
+        from django.contrib.auth import logout
+        try:
+            logout(request)
+            return redirect('/')
+        except Exception as ex:
+            print(ex)
+            return bad_request(request, ex)

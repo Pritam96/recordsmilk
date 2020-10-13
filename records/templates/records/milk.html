@@ -13,15 +13,24 @@
 
         <form method="POST" id="MilkAdd">
             {% csrf_token %}
-            <div class="row ">
-                <div class="form-group col-6">
-                    <input type="text" class="form-control" name="milk" placeholder="Milk Type" required>
+
+            <div class="row">
+                <div class="form-group mt-3 col-6">
+                    <select class="form-control" name="milk" required>
+                        <option value="Cow">Cow milk</option>
+                        <option value="Buffalo">Buffalo milk</option>
+                    </select>
                 </div>
             </div>
 
+
             <div class="row ">
-                <div class="form-group col-6">
-                    <input type="text" class="form-control" name="rate" placeholder="Rate" required>
+                <div class="input-group col-6 mb-3">
+                    <input type="text" class="form-control" name="rate" placeholder="Rate" required
+                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">Rupees per Kg.</span>
+                    </div>
                 </div>
             </div>
 
